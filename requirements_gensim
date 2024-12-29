@@ -1,5 +1,0 @@
-gensim==3.8.0
-numpy==1.2.1
-
-Por incompatibilidades entre gensim y las versiones 2.x.x de gensim nos vemos obligados a crear 2 entornos virtuales, uno 
-con los requerimientos de pandas, scikit-learn y el último numpy; y otro con gensim y su versión de numpy compatible.
