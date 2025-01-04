@@ -1,7 +1,8 @@
 import pandas as pd
 
 #Modulo 1
-
+def preprocess_post(text: str):
+    pass
 #Modulo 2
 def classify_subredit(text):
     pass
