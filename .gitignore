@@ -2,4 +2,7 @@ reddit_database_sentiment/reddit_database_sentiment.csv
 gensimenv/
 main/
 mainenv/
+__pycache__/
 Enunciado práctica 24 25.pdf
+processed_dataset.zip
+processed_dataset.csv
