@@ -5,7 +5,9 @@ import re
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
-
+import string
+import re
+from bs4 import BeautifulSoup
 
 
 #Modulo 1
@@ -51,9 +53,6 @@ def classify_subredit(text):
     pass
 
 # Modulo 3
-from typing import List
-import re
-from bs4 import BeautifulSoup
 
 def find_subreddit_mentions(text: str) -> List[str]:
     """
@@ -145,36 +144,11 @@ def code_extraction(text: str) -> List[str]|str:
 
 # Modulo 4
 
-import pickle
-import pandas as pd
-
-def sentiment_analysis_ngrams(text):
-    try:
-        with open('models_modulo4/sentiment_ngrams.pkl', 'rb') as f:
-            model_data = pickle.load(f)
-        model = model_data['model']
-        f1 = model_data['f1_score']
-    except:
-        print("Error al cargar el modelo")
-        return None
-        
-    if pd.isna(text) or text == '':
-        text = ''
-        
-    sentiment = model.predict([text])[0]
-    proba = model.predict_proba([text])[0]
-    confidence = float(max(proba))
-    
-    return {
-        'sentiment': sentiment,
-        'confidence': confidence,
-        'model_f1_score': f1
-    }
-
+def sentiment_analysis(post: str):
+    pass
 # Modulo 5 con 'post'
-from nltk.corpus import stopwords
-from nltk.tokenize import sent_tokenize, word_tokenize
-import string
+
+
 def post_summarisation_full_text(text):
 
     """
