@@ -144,8 +144,32 @@ def code_extraction(text: str) -> List[str]|str:
     return html_code
 
 # Modulo 4
-def sentiment_analysis(text: str):
-    pass
+
+import pickle
+import pandas as pd
+
+def sentiment_analysis_ngrams(text):
+    try:
+        with open('models_modulo4/sentiment_ngrams.pkl', 'rb') as f:
+            model_data = pickle.load(f)
+        model = model_data['model']
+        f1 = model_data['f1_score']
+    except:
+        print("Error al cargar el modelo")
+        return None
+        
+    if pd.isna(text) or text == '':
+        text = ''
+        
+    sentiment = model.predict([text])[0]
+    proba = model.predict_proba([text])[0]
+    confidence = float(max(proba))
+    
+    return {
+        'sentiment': sentiment,
+        'confidence': confidence,
+        'model_f1_score': f1
+    }
 
 # Modulo 5 con 'post'
 from nltk.corpus import stopwords
