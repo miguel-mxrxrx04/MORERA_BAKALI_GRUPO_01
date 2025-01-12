@@ -1,9 +1,12 @@
 import pandas as pd
+from typing import List
+import time
 import re
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
-from typing import List
+
+
 
 #Modulo 1
 def preprocess_post(text: str):
@@ -13,14 +16,11 @@ def preprocess_post(text: str):
     Aplica reemplazos de patrones y realiza la tokenización,
     filtrando stopwords y caracteres no alfanuméricos.
     """
-
-        # 1. Precompilar patrones regex (más eficiente)
     HTML_PATTERN = re.compile(r'<[^>]*>')
     URL_PATTERN = re.compile(r'https?://\S+|www\.\S+')
     MENTION_PATTERN = re.compile(r'@\w+|#\w+')
     SPECIAL_CHARS = re.compile(r'[^\w\s]')
 
-    # 2. Cargar recursos NLTK una sola vez
     lemmatizer = WordNetLemmatizer()
     stop_words = set(stopwords.words('english'))
 
@@ -45,11 +45,12 @@ def preprocess_post(text: str):
     ]
     
     return ' '.join(tokens)
-#Modulo 2
+
+# Modulo 2
 def classify_subredit(text):
     pass
 
-#Modulo 3
+# Modulo 3
 from typing import List
 import re
 
@@ -68,14 +69,28 @@ def find_subreddit_mentions(text: str) -> List[str]:
     subreddit_mentions = subreddit_mention_pattern.findall(text)
     return subreddit_mentions
 
-def url_extraction(text: str) -> List[str]|str:
-    patron_url = re.compile(
-    r'(https?://(?:www\.|(?!www))[^\s]+|'      # URLs con http:// o https://
-    r'www\.[^\s]+|'                            # URLs que empiezan con www.
-    r'[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'           # URLs sin protocolo
+def url_extraction(text: str) -> List[str]:
+    """
+    Extrae URLs del texto
+    """
+    url_pattern = re.compile(
+        r'(https?://(?:www\.|(?!www))[^\s]+)|'      # URLs con http:// o https://
+        r'(www\.[^\s]+)|'                           # URLs que empiezan con www.
+        r'([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'          # URLs sin protocolo
     )
-    urls = patron_url.findall(text)
-    return urls
+    # Corregimos el orden: primero va el patrón, luego el texto
+    urls = re.findall(url_pattern, text)
+    
+    # Como findall con grupos retorna tuplas, necesitamos procesar el resultado
+    # para obtener solo las URLs válidas
+    extracted_urls = []
+    for url_tuple in urls:
+        # Tomar la primera URL no vacía de cada tupla
+        url = next((u for u in url_tuple if u), None)
+        if url:
+            extracted_urls.append(url)
+    
+    return extracted_urls
 
 def phone_number_extraction(text: str) -> List[str]|str:
     """
@@ -127,7 +142,7 @@ def code_extraction(text: str) -> List[str]|str:
     html_code = soup.prettify()
     return html_code
 
-#Modulo 4
+# Modulo 4
 def sentiment_analysis(text: str):
     pass
 
