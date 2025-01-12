@@ -10,3 +10,6 @@ AllLabs.ipynb
 clean_post_corpus.txt
 reddit_posts_reduced.csv
 review.ipynb
+mi_modelo.bin
+word2vec_model.bin
+models_modulo4/

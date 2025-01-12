@@ -53,6 +53,7 @@ def classify_subredit(text):
 # Modulo 3
 from typing import List
 import re
+from bs4 import BeautifulSoup
 
 def find_subreddit_mentions(text: str) -> List[str]:
     """
@@ -137,7 +138,7 @@ def dates_extraction(text: str) -> List[str]:
     return dates
 
 def code_extraction(text: str) -> List[str]|str:
-    from bs4 import BeautifulSoup
+
     soup = BeautifulSoup(text, 'html.parser')
     html_code = soup.prettify()
     return html_code
@@ -146,11 +147,12 @@ def code_extraction(text: str) -> List[str]|str:
 def sentiment_analysis(text: str):
     pass
 
-# Modulo 5
-def post_summarisation(text):
-    from nltk.corpus import stopwords
-    from nltk.tokenize import sent_tokenize, word_tokenize
-    import string
+# Modulo 5 con 'post'
+from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize, word_tokenize
+import string
+def post_summarisation_full_text(text):
+
     """
     Genera un resumen extractivo usando frecuencia de palabras.
     text: Texto original (multi-línea) del que se extraerá el resumen.
@@ -189,10 +191,58 @@ def post_summarisation(text):
     ranked_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
     final_sentences = len(sentences) // 2
     summary = " ".join(ranked_sentences[:final_sentences])
-
     return summary
 
+# Módulo 5 para clean_post
 
-#Modulo 6
+def token_based_post_summarisation(tokens: str) -> str:
+    """
+    Genera un resumen usando el 25% de los tokens más relevantes.
+    
+    Args:
+        tokens (str): String de tokens preprocesados separados por espacios
+    
+    Returns:
+        str: Resumen con los tokens más frecuentes
+    """
+    # Convertir string de tokens a lista
+    token_list = tokens.split()
+    
+    # Calcular frecuencias
+    word_frequencies = {}
+    for token in token_list:
+        word_frequencies[token] = word_frequencies.get(token, 0) + 1
+    
+    # Ordenar tokens por frecuencia
+    sorted_tokens = sorted(word_frequencies.items(), 
+                         key=lambda x: x[1], 
+                         reverse=True)
+    
+    # Seleccionar el 50% de los tokens más frecuentes
+    num_tokens = max(1, len(token_list) // 2)
+    selected_tokens = [token for token, _ in sorted_tokens[:num_tokens]]
+    
+    return " ".join(selected_tokens)
+
+
+
+# Módulo 6
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
 def texts_distance(text1: str, text2: str):
-    pass 
+
+    '''
+    Calcula la distancia entre dos textos usando TF-IDF y similitud del coseno.
+    Los textos deben ser strings de tokens preprocesados separados por espacios.
+    
+    Args:
+        text1 (str): Primer texto de tokens
+        text2 (str): Segundo texto de tokens
+    
+    Returns:
+        float: Distancia entre 0 (idénticos) y 1 (completamente diferentes)
+    '''
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([text1, text2])
+    return 1 - cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
